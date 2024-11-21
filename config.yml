@@ -1,0 +1,22 @@
+width: 512
+height: 512
+
+affines:
+ - [1.005, 0, 0, 0, 1.005, 0, 0.498, 0, 1]
+ - [0, 1.005, 0, 0, 0, 1.005, 0.498, 0, 1]
+ - [-0.995, 1.002, 0, -1.002, 0.995, 0, 1, 0.4, 0.698]
+
+variations:
+ - Linear
+ - Sinusoidal
+ - Spherical
+ - Swirl
+ - Horseshoe
+
+samples: 256
+iter-per-sample: 1024
+
+seed: 4096
+
+symmetry: 4
+is-relative-symmetry: false

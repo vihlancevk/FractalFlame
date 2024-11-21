@@ -1,8 +1,8 @@
-package backend.image.processor.implementation;
+package backend.academy.image.processor.implementation;
 
 import backend.academy.FractalImage;
 import backend.academy.Pixel;
-import backend.image.processor.ImageProcessor;
+import backend.academy.image.processor.ImageProcessor;
 
 public class LogarithmicGammaCorrection implements ImageProcessor {
     private static final double GAMMA = 2.2;

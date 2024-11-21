@@ -1,4 +1,4 @@
-package backend.image.processor;
+package backend.academy.image.processor;
 
 import backend.academy.FractalImage;
 
