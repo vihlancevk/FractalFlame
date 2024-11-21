@@ -10,6 +10,8 @@ import backend.academy.transformation.implementation.Swirl;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Random;
+import backend.image.processor.ImageProcessor;
+import backend.image.processor.implementation.LogarithmicGammaCorrection;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -43,6 +45,9 @@ public class Main {
                 render(canvas, world, affines, variations, samples, iterPerSample, random);
             }
         }
+
+        ImageProcessor imageProcessor = new LogarithmicGammaCorrection();
+        imageProcessor.process(canvas);
 
         ImageUtils.save(canvas, ImageFormat.PNG, Path.of("fractal-flame.png"));
     }

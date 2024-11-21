@@ -6,12 +6,14 @@ public class Pixel {
     private double r;
     private double g;
     private double b;
+    private double a;
     private int hitCount;
 
     public Pixel(double r, double g, double b, int hitCount) {
         this.r = r;
         this.g = g;
         this.b = b;
+        this.a = 1;
         this.hitCount = hitCount;
     }
 
@@ -39,12 +41,25 @@ public class Pixel {
         this.b = b;
     }
 
+    public double getA() {
+        return a;
+    }
+
+    public void setA(double a) {
+        this.a = a;
+    }
+
     public int getHitCount() {
         return hitCount;
     }
 
     public void setHitCount(int hitCount) {
         this.hitCount = hitCount;
+    }
+
+    @SuppressWarnings("MagicNumber")
+    public int getRGB() {
+        return  scale(r) << 16 | scale(g) << 8 | scale(b);
     }
 
     @Override
@@ -65,11 +80,20 @@ public class Pixel {
             return false;
         }
 
+        if (Double.compare(a, pixel.a) != 0) {
+            return false;
+        }
+
         return hitCount == pixel.hitCount;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(r, g, b, hitCount);
+        return Objects.hash(r, g, b, a, hitCount);
+    }
+
+    @SuppressWarnings("MagicNumber")
+    private int scale(double value) {
+        return (int) (255 * value);
     }
 }

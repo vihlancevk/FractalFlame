@@ -1,9 +1,9 @@
 package backend.academy;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
+import javax.imageio.ImageIO;
 
 public final class ImageUtils {
     private ImageUtils() {
@@ -16,11 +16,10 @@ public final class ImageUtils {
 
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
 
-        for(int x = 0; x < width; x++) {
-            for(int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 Pixel pixel = image.pixel(x, y);
-                int rgb = (int) (255 * pixel.getR()) << 16 | (int) (255 * pixel.getG()) << 8 | (int) (255 * pixel.getB());
-                bufferedImage.setRGB(x, y, rgb);
+                bufferedImage.setRGB(x, y, pixel.getRGB());
             }
         }
         try {
