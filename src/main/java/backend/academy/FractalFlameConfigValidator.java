@@ -14,6 +14,7 @@ public final class FractalFlameConfigValidator {
         validateSamples(config.samples());
         validateIterPerSample(config.iterPerSample());
         validateSymmetry(config.symmetry());
+        validateNumberOfThreads(config.numberOfThreads());
     }
 
     private static void validateImageSize(int width, int height) {
@@ -70,8 +71,8 @@ public final class FractalFlameConfigValidator {
     }
 
     private static void validateColor(double color) {
-        double min = 0;
-        double max = 1;
+        double min = 0.0;
+        double max = 1.0;
 
         if (!(min <= color && color <= max)) {
             throw new IllegalArgumentException(
@@ -81,8 +82,8 @@ public final class FractalFlameConfigValidator {
     }
 
     private static void validateSamples(int samples) {
-        int min = 16;
-        int max = 1024;
+        int min = 128;
+        int max = 8192;
 
         if (!(min <= samples && samples <= max)) {
             throw new IllegalArgumentException(
@@ -92,8 +93,8 @@ public final class FractalFlameConfigValidator {
     }
 
     private static void validateIterPerSample(short iterPerSample) {
-        short min = 16;
-        short max = 1024;
+        short min = 128;
+        short max = 8192;
 
         if (!(min <= iterPerSample && iterPerSample <= max)) {
             throw new IllegalArgumentException(
@@ -103,12 +104,23 @@ public final class FractalFlameConfigValidator {
     }
 
     private static void validateSymmetry(int symmetry) {
-        int min = 0;
+        int min = 1;
         int max = 16;
 
         if (!(min <= symmetry && symmetry <= max)) {
             throw new IllegalArgumentException(
                 "Symmetry must be from " + min + " to " + max + ", but not: " + symmetry
+            );
+        }
+    }
+
+    private static void validateNumberOfThreads(short numberOfThreads) {
+        short min = 1;
+        short max = Short.MAX_VALUE;
+
+        if (!(min <= numberOfThreads)) {
+            throw new IllegalArgumentException(
+                "Number of threads must be from " + min + " to " + max + ", but not: " + numberOfThreads
             );
         }
     }

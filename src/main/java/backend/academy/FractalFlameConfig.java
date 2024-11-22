@@ -22,7 +22,9 @@ public class FractalFlameConfig {
 
     private static final Long DEFAULT_SEED = 0L;
 
-    private static final Integer DEFAULT_SYMMETRY = 0;
+    private static final Integer DEFAULT_SYMMETRY = 1;
+
+    private static final Short DEFAULT_NUMBER_OF_THREADS = 1;
 
     private final Integer width;
     private final Integer height;
@@ -38,6 +40,8 @@ public class FractalFlameConfig {
     private final Integer symmetry;
     private final boolean isRelativeSymmetry;
 
+    private final Short numberOfThreads;
+
     @JsonCreator
     @SuppressWarnings("ParameterNumber")
     public FractalFlameConfig(
@@ -49,17 +53,24 @@ public class FractalFlameConfig {
         @JsonProperty("iter-per-sample") Short iterPerSample,
         @JsonProperty("seed") Long seed,
         @JsonProperty("symmetry") Integer symmetry,
-        @JsonProperty("is-relative-symmetry") boolean isRelativeSymmetry
+        @JsonProperty("is-relative-symmetry") boolean isRelativeSymmetry,
+        @JsonProperty("number-of-threads") Short numberOfThreads
     ) {
         this.width = width == null ? DEFAULT_WIDTH : width;
         this.height = height == null ? DEFAULT_HEIGHT : height;
+
         this.affines = affines == null ? DEFAULT_AFFINES : affines;
         this.variations = variations == null ? DEFAULT_VARIATIONS : variations;
+
         this.samples = samples == null ? DEFAULT_SAMPLES : samples;
         this.iterPerSample = iterPerSample == null ? DEFAULT_ITER_PER_SAMPLE : iterPerSample;
+
         this.seed = seed == null ? DEFAULT_SEED : seed;
+
         this.symmetry = symmetry == null ? DEFAULT_SYMMETRY : symmetry;
         this.isRelativeSymmetry = isRelativeSymmetry;
+
+        this.numberOfThreads = numberOfThreads == null ? DEFAULT_NUMBER_OF_THREADS : numberOfThreads;
     }
 
     public int width() {
@@ -96,5 +107,9 @@ public class FractalFlameConfig {
 
     public boolean isRelativeSymmetry() {
         return isRelativeSymmetry;
+    }
+
+    public short numberOfThreads() {
+        return numberOfThreads;
     }
 }

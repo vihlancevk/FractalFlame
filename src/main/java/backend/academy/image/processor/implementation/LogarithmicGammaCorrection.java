@@ -18,7 +18,7 @@ public class LogarithmicGammaCorrection implements ImageProcessor {
     }
 
     private double correctByLogarithmicCorrection(int width, int height, Pixel[] data) {
-        double max = 0;
+        double max = 0.0;
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Pixel pixel = data[y * width + x];

@@ -9,15 +9,18 @@ import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public final class FractalFlame {
     private static final Random RANDOM = new SecureRandom();
-    private static final double SQUARE_SIDE = 0.1;
 
     private FractalFlame() {
 
     }
 
+    @SuppressWarnings("MagicNumber")
     public static void render(FractalFlameConfig config) {
         FractalImage canvas = FractalImage.create(config.width(), config.height());
 
@@ -26,10 +29,35 @@ public final class FractalFlame {
 
         RANDOM.setSeed(config.seed());
 
-        for (double y = -1; Double.compare(y + SQUARE_SIDE, 1.0) < 0; y += SQUARE_SIDE) {
-            for (double x = -1; Double.compare(x + SQUARE_SIDE, 1.0) < 0; x += SQUARE_SIDE) {
-                Rect world = new Rect(x, y, SQUARE_SIDE, SQUARE_SIDE);
-                render(canvas, world, affines, variations, config);
+        int numberOfThreads = config.numberOfThreads();
+        int samplesForThreads = config.samples() / (numberOfThreads * numberOfThreads);
+        double squareSide = 2.0 / numberOfThreads;
+        try (ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads)) {
+            for (int j = 0; j < numberOfThreads; j++) {
+                for (int i = 0; i < numberOfThreads; i++) {
+                    double finalX = -1.0 + i * squareSide;
+                    double finalY = -1.0 + j * squareSide;
+                    executorService.submit(
+                        () -> {
+                            try {
+                                Rect world = new Rect(finalX, finalY, squareSide, squareSide);
+                                render(canvas, world, affines, variations, config, samplesForThreads);
+                            } catch (Exception e) {
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                    );
+                }
+            }
+
+            executorService.shutdown();
+            try {
+                if (!executorService.awaitTermination(10, TimeUnit.MINUTES)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executorService.shutdownNow();
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -44,9 +72,10 @@ public final class FractalFlame {
         Rect world,
         List<Affine> affines,
         List<Transformation> variations,
-        FractalFlameConfig config
+        FractalFlameConfig config,
+        int samplesForThreads
     ) {
-        for (int num = 0; num < config.samples(); num++) {
+        for (int num = 0; num < samplesForThreads; num++) {
             Point point = world.getRandomPoint(RANDOM);
 
             for (short step = 0; step < config.iterPerSample(); step++) {
@@ -57,8 +86,8 @@ public final class FractalFlame {
                 point = variation.apply(point);
 
                 int symmetry = config.symmetry();
-                double angle = 0;
-                for (int s = 0; s < symmetry; angle += Math.PI * 2 / symmetry, s++) {
+                double angle = 0.0;
+                for (int s = 0; s < symmetry; angle += Math.PI * 2.0 / symmetry, s++) {
                     point = config.isRelativeSymmetry()
                         ? rotateRelativeSymmetry(world, point, angle)
                         : rotateAbsoluteSymmetry(point, angle);
@@ -71,17 +100,18 @@ public final class FractalFlame {
                         continue;
                     }
 
-                    if (pixel.getHitCount() == 0) {
-                        pixel.setR(affine.getRgbR());
-                        pixel.setG(affine.getRgbG());
-                        pixel.setB(affine.getRgbB());
-                    } else {
-                        pixel.setR((pixel.getR() + affine.getRgbR()) / 2);
-                        pixel.setG((pixel.getG() + affine.getRgbG()) / 2);
-                        pixel.setB((pixel.getB() + affine.getRgbB()) / 2);
+                    synchronized (pixel) {
+                        if (pixel.getHitCount() == 0) {
+                            pixel.setR(affine.getRgbR());
+                            pixel.setG(affine.getRgbG());
+                            pixel.setB(affine.getRgbB());
+                        } else {
+                            pixel.setR((pixel.getR() + affine.getRgbR()) / 2.0);
+                            pixel.setG((pixel.getG() + affine.getRgbG()) / 2.0);
+                            pixel.setB((pixel.getB() + affine.getRgbB()) / 2.0);
+                        }
                         pixel.setHitCount(pixel.getHitCount() + 1);
                     }
-                    pixel.setHitCount(pixel.getHitCount() + 1);
                 }
             }
         }
@@ -93,15 +123,15 @@ public final class FractalFlame {
     }
 
     private static Point rotateAbsoluteSymmetry(Point point, double angle) {
-        double absoluteCenterX = 0;
-        double absoluteCenterY = 0;
+        double absoluteCenterX = 0.0;
+        double absoluteCenterY = 0.0;
 
         return rotate(point, angle, absoluteCenterX, absoluteCenterY);
     }
 
     private static Point rotateRelativeSymmetry(Rect world, Point point, double angle) {
-        double relativeCenterX = world.x() + world.width() / 2;
-        double relativeCenterY = world.y() + world.height() / 2;
+        double relativeCenterX = world.x() + world.width() / 2.0;
+        double relativeCenterY = world.y() + world.height() / 2.0;
 
         return rotate(point, angle, relativeCenterX, relativeCenterY);
     }

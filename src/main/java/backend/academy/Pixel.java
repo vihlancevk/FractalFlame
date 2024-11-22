@@ -13,7 +13,7 @@ public class Pixel {
         this.r = r;
         this.g = g;
         this.b = b;
-        this.a = 1;
+        this.a = 1.0;
         this.hitCount = hitCount;
     }
 
