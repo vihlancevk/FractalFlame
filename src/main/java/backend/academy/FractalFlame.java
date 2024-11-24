@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 public final class FractalFlame {
     private static final Random RANDOM = new SecureRandom();
+    private static final int HEATING_VALUE = -20;
+
 
     private FractalFlame() {
 
@@ -78,12 +80,16 @@ public final class FractalFlame {
         for (int num = 0; num < samplesForThreads; num++) {
             Point point = world.getRandomPoint(RANDOM);
 
-            for (short step = 0; step < config.iterPerSample(); step++) {
+            for (short step = HEATING_VALUE; step < config.iterPerSample(); step++) {
                 Affine affine = getRandomElement(affines);
                 Transformation variation = getRandomElement(variations);
 
                 point = affine.apply(point);
                 point = variation.apply(point);
+
+                if (step < 0) {
+                    continue;
+                }
 
                 int symmetry = config.symmetry();
                 double angle = 0.0;
