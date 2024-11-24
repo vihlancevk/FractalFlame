@@ -83,9 +83,9 @@ public final class FractalFlameConfigValidator {
 
     private static void validateSamples(int samples) {
         int min = 128;
-        int max = 8192;
+        int max = Integer.MAX_VALUE;
 
-        if (!(min <= samples && samples <= max)) {
+        if (!(min <= samples)) {
             throw new IllegalArgumentException(
                 "Samples must be from " + min + " to " + max + ", but not: " + samples
             );
@@ -94,9 +94,9 @@ public final class FractalFlameConfigValidator {
 
     private static void validateIterPerSample(short iterPerSample) {
         short min = 128;
-        short max = 8192;
+        short max = Short.MAX_VALUE;
 
-        if (!(min <= iterPerSample && iterPerSample <= max)) {
+        if (!(min <= iterPerSample)) {
             throw new IllegalArgumentException(
                 "Iter per sample must be from " + min + " to " + max + ", but not: " + iterPerSample
             );

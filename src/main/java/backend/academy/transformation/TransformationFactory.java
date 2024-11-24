@@ -2,6 +2,7 @@ package backend.academy.transformation;
 
 import backend.academy.transformation.implementation.Horseshoe;
 import backend.academy.transformation.implementation.Linear;
+import backend.academy.transformation.implementation.Polar;
 import backend.academy.transformation.implementation.Sinusoidal;
 import backend.academy.transformation.implementation.Spherical;
 import backend.academy.transformation.implementation.Swirl;
@@ -23,6 +24,7 @@ public final class TransformationFactory {
             case "Spherical" -> new Spherical();
             case "Swirl" -> new Swirl();
             case "Horseshoe" -> new Horseshoe();
+            case "Polar" -> new Polar();
             default -> throw new IllegalArgumentException("Unknown transformation: " + name);
         };
     }
