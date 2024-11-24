@@ -97,7 +97,7 @@ public final class FractalFlame {
                     point = config.isRelativeSymmetry()
                         ? rotateRelativeSymmetry(world, point, angle)
                         : rotateAbsoluteSymmetry(point, angle);
-                    if (!world.contains(point)) {
+                    if (!canvas.contains(point)) {
                         continue;
                     }
 

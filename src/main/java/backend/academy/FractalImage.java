@@ -12,6 +12,10 @@ public record FractalImage(Pixel[] data, int width, int height) {
         return new FractalImage(data, width, height);
     }
 
+    public boolean contains(Point point) {
+        return contains(point.x(), point.y());
+    }
+
     public boolean contains(double x, double y) {
         return isBelongToSegmentFromMinusOneToOne(x) && isBelongToSegmentFromMinusOneToOne(y);
     }
